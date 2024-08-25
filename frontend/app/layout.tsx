@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import '@rainbow-me/rainbowkit/styles.css';
 import "../styles/globals.scss";
+import '@rainbow-me/rainbowkit/styles.css';
 
 //components
 import Header from "@/components/Header";

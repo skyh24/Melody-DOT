@@ -156,27 +156,6 @@ export default function UploadForm() {
                       Music Cover
                     </FormLabel>
                     <FormControl>
-                      {/* <div className="flex items-center justify-center w-full">
-                        <div className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
-                          <div className="h-full w-full text-center flex flex-col items-center justify-center">
-                            <div className="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
-                              <img
-                                className="has-mask h-36 object-center"
-                                src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg"
-                                alt="freepik image"
-                              />
-                            </div>
-                            <p className="pointer-none text-gray-500">
-                              <span className="text-sm">Drag and drop</span>{" "}
-                              files here <br /> or{" "}
-                              <a className="text-blue-600 hover:underline">
-                                select a file
-                              </a>{" "}
-                              from your computer
-                            </p>
-                          </div>
-                        </div>
-                      </div> */}
                       <div className="grid w-full max-w-sm items-center gap-1.5">
                         <Input
                           ref={inputFile}
@@ -199,9 +178,9 @@ export default function UploadForm() {
                       </div>
                     </FormControl>
                     <FormDescription>
-                      <p className="text-sm text-gray-300 text-center">
-                        <span>File type: MP3 types of images</span>
-                      </p>
+                      <span className="pl-2 text-sm text-gray-300 text-center">
+                        File type: jpg、png types of images
+                      </span>
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -236,9 +215,9 @@ export default function UploadForm() {
                       </div>
                     </FormControl>
                     <FormDescription>
-                      <p className="text-sm text-gray-300 text-center">
-                        <span>File type: MP3 types of images</span>
-                      </p>
+                      <span className="pl-2 text-sm text-gray-300 text-center">
+                        File type: MP3 types of file
+                      </span>
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
