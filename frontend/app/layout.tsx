@@ -1,13 +1,13 @@
-
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import '@rainbow-me/rainbowkit/styles.css';
 import "../styles/globals.scss";
 
 //components
 import Header from "@/components/Header";
 import PageTransition from "@/components/transition/PageTransition";
 import StairTransition from "@/components/transition/StairTransition";
+import { Providers } from "./providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,9 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.variable}>
-        <Header />
-        <StairTransition />
-        <PageTransition>{children}</PageTransition>
+        <Providers>
+          <Header />
+          <StairTransition />
+          <PageTransition>{children}</PageTransition>
+        </Providers>
       </body>
     </html>
   );

@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 //components
 import Nav from "./Nav";
 import MobilNav from "./MobilNav";
-
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 const Header = () => {
   return (
     <header className="py-8 xl:py-10 text-white">
@@ -15,18 +15,16 @@ const Header = () => {
             Melody-DOT <span className="text-accent">.</span>
           </h1>
         </Link>
-
         {/* nav */}
         <div className="hidden lg:flex items-center gap-8">
           <Nav />
+          <ConnectButton />
         </div>
         {/* mobile nav */}
         <div className="lg:hidden ">
           <MobilNav />
         </div>
-
         {/* subwallet */}
-        <Button>Subwallet</Button>
       </div>
     </header>
   );

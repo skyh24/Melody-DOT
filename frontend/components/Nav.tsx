@@ -32,6 +32,7 @@ const Nav = () => {
           {link.name}
         </Link>
       ))}
+      
     </nav>
   );
 };
