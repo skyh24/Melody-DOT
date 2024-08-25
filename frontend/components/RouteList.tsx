@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 1.0
+ * @Author: Hesin
+ * @Date: 2024-08-21 16:05:19
+ * @LastEditors: Hesin
+ * @LastEditTime: 2024-08-25 17:29:35
+ */
 "use client";
 
 export interface RouteProp {
@@ -7,6 +15,6 @@ export interface RouteProp {
 
 export const routeList: RouteProp[] = [
   { name: "home", path: "/" },
-  { name: "services", path: "/services" },
+  { name: "Create", path: "/services" },
   { name: "contact", path: "/contact" },
 ];

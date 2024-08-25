@@ -6,13 +6,12 @@
  * @LastEditors: Hesin
  * @LastEditTime: 2024-08-25 15:05:25
  */
-import UploadForm from "@/components/UploadForm";
+import CreateNFT from "@/components/CreateNFT";
 
 const Services = () => {
   return (
     <div>
-      
-      <UploadForm />
+      <CreateNFT />
     </div>
   );
 };

@@ -128,10 +128,15 @@ export default function UploadForm() {
   }
   return (
     <main className="w-full min-h-screen m-auto flex flex-col justify-center items-center">
-      {/* <input type="file" id="file" ref={inputFile} onChange={handleCoverChange} />
+      <input
+        type="file"
+        id="file"
+        ref={inputFile}
+        onChange={handleCoverChange}
+      />
       <button disabled={uploading} onClick={uploadFile}>
         {uploading ? "Uploading..." : "Upload"}
-      </button> */}
+      </button>
       <div className="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10">
         <h1 className="text-4xl font-bold text-gray-700 mb-10 text-center">
           Create NFT
