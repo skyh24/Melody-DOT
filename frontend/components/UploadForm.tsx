@@ -18,6 +18,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 
+// Define a schema for file properties
+const fileSchema = z.object({
+  size: z.number().positive().int().optional(), // File size in bytes
+  type: z.string().optional(), // MIME type
+});
 //form Schema
 const formSchema = z.object({
   username: z.string().min(6, {
@@ -30,12 +35,18 @@ const formSchema = z.object({
     })
     .max(200)
     .optional(),
-  musicCover: z.instanceof(File, {
-    message: "Music cover is required.",
-  }),
-  musicFile: z.instanceof(File, {
-    message: "Music file is required.",
-  }),
+  musicCover: fileSchema.refine(
+    (file) => file?.size != null && file?.type != null,
+    {
+      message: "Music cover is required and must have valid properties.",
+    }
+  ),
+  musicFile: fileSchema.refine(
+    (file) => file?.size != null && file?.type != null,
+    {
+      message: "Music file is required and must have valid properties.",
+    }
+  ),
 });
 export default function UploadForm() {
   const [coverFile, setCoverFile] = useState<File | null>(null);
