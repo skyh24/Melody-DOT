@@ -6,7 +6,7 @@ export interface RouteProp {
 }
 
 export const routeList: RouteProp[] = [
-  { name: "home", path: "/" },
-  { name: "services", path: "/services" },
-  { name: "contact", path: "/contact" },
+  { name: "Gallary", path: "/" },
+  { name: "Create", path: "/services" },
+  { name: "About", path: "/contact" },
 ];
