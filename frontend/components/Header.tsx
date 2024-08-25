@@ -24,6 +24,9 @@ const Header = () => {
         <div className="lg:hidden ">
           <MobilNav />
         </div>
+
+        {/* subwallet */}
+        <Button>Subwallet</Button>
       </div>
     </header>
   );
