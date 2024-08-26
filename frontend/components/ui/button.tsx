@@ -4,7 +4,7 @@
  * @Author: Hesin
  * @Date: 2024-08-21 15:36:52
  * @LastEditors: Hesin
- * @LastEditTime: 2024-08-25 11:13:11
+ * @LastEditTime: 2024-08-26 06:07:57
  */
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
@@ -19,7 +19,9 @@ const buttonVariants = cva(
       variant: {
         default:
           "font-medium  rounded-full bg-accent text-primary hover:bg-accent-hover",
-        primary: "bg-primary text-white",
+        primary: "bg-primary text-white ",
+        nooutline:
+          "font-medium bg-accent text-primary hover:bg-accent-hover",
         outline:
           "border border-accent bg-transparent text-accent hover:bg-accent hover:text-primary",
       },

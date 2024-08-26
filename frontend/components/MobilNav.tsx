@@ -28,11 +28,9 @@ const MobilNav = () => {
       <SheetContent className="flex flex-col">
         {/* logo */}
         <div className="mt-32 mb-40 text-center text-2xl">
-          <Link href="/">
-            <h1 className="text-4xl font-semibold">
-              Melody-DOT <span className="text-accent">.</span>
-            </h1>
-          </Link>
+          <h2 className="text-4xl font-semibold">
+            Melody-DOT <span className="text-accent">.</span>
+          </h2>
         </div>
 
         {/* nav */}

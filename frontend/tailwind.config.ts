@@ -4,7 +4,7 @@
  * @Author: 
  * @Date: 2024-08-21 15:11:21
  * @LastEditors: Hesin
- * @LastEditTime: 2024-08-21 15:34:27
+ * @LastEditTime: 2024-08-26 05:11:04
  */
 import type { Config } from "tailwindcss"
 
@@ -54,6 +54,7 @@ const config = {
           hover: "#00e187"
         }
       },
+      
     },
   },
   plugins: [require("tailwindcss-animate")],
