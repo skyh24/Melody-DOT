@@ -73,7 +73,7 @@ export default function CreateNFT() {
 				// SECOND Json
 				const secDataParams = {
 					image: "",
-					mediaUri: `ipfs://${res.IpfsHash}/${file.name}`,
+					mediaUri: `ipfs://${res.IpfsHash}`,
 					attributes: [],
 					name: file.name,
 					description: ".",
