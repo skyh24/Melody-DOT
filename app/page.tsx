@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 1.0
+ * @Author: Hesin
+ * @Date: 2024-08-27 15:33:06
+ * @LastEditors: Hesin
+ * @LastEditTime: 2024-08-27 20:40:55
+ */
 "use client";
 
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
@@ -19,8 +27,6 @@ export default function Home() {
           <Cover>lightning speed</Cover>
         </h1>
       </BackgroundBeamsWithCollision>
-
-			<div className="my-40"></div>
 		</main>
 	);
 }

@@ -16,11 +16,12 @@ import {
 } from "wagmi";
 import { melodyAbi } from "@/contracts/abi";
 import { getPinataData } from "@/utils/config";
-
+import { FaArrowsAltV } from "react-icons/fa";
 export const PlayGround = () => {
   const { playList, setCurrentMusic, currentMusic } = usePlayer();
   const [musicList, setmusicList] = useState([]);
   const publicClient = usePublicClient();
+  const [isColl, setisColl] = useState(false);
 
   const contractAddress = process.env
     .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
@@ -57,16 +58,18 @@ export const PlayGround = () => {
     }
 
     const tokenURIList = await publicClient.multicall({ contracts: arr });
-    
+
     const dataPromises = tokenURIList.map(async (itm) => {
-      const data = await new Promise((resolve) => getPinataData(itm.result, resolve));
+      const data = await new Promise((resolve) =>
+        getPinataData(itm.result, resolve)
+      );
       return {
         name: data.name,
         src: extractCID(data.mediaUri),
         image: "",
       };
     });
-  
+
     // Wait for all promises to resolve
     const list = await Promise.all(dataPromises);
 
@@ -123,23 +126,7 @@ export const PlayGround = () => {
               </div>
             </div>
             {/* RIGHT */}
-            <div className="w-5/6 flex flex-col gap-2 justify-center bg-gradient-to-l from-zinc-700   p-6">
-              <h6 className="font-semibold text-sm">{music.name}</h6>
-              {/* <p className="text-xs text-gray-400">{music.artist}</p> */}
-
-              <Sheet>
-                <SheetTrigger className="flex justify-center text-primary items-center bg-accent hover:bg-accent-hover px-4 py-4 rounded-full flex items-center gap-2 absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <FaEdit />
-                </SheetTrigger>
-                <SheetContent className="flex flex-col">
-                  <SecondNFT music={music} />
-                </SheetContent>
-              </Sheet>
-            </div>
-
-            {/* <div className="w-1/12 flex justify-center items-center text-3xl bg-black/10">
-                {isPlaying ? <TbPlayerPause /> : <TbPlayerPlay />}
-              </div> */}
+            {/* {isColl && idx == 1 && <div>1111</div>} */}
           </div>
         );
       })}

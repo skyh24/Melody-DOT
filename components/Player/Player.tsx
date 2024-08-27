@@ -1,3 +1,4 @@
+'use client'  
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useEffect, useRef, useState } from "react";
@@ -120,10 +121,10 @@ export const Player = () => {
           {/* title and thumbnail */}
           <div className="flex items-center lg:w-3/12 gap-2">
             <div className="w-14 h-14 lg:flex-shrink-0">
-              {currentMusic.thumbnail ? (
+              {currentMusic.image ? (
                 <img
-                  src={currentMusic.thumbnail}
-                  alt={currentMusic.title}
+                  src={currentMusic.image}
+                  alt={currentMusic.name}
                   className="rounded-lg"
                 />
               ) : (
@@ -131,7 +132,7 @@ export const Player = () => {
               )}
             </div>
             <div className="flex flex-col gap-1">
-              <h6 className="text-sm font-semibold">{currentMusic.title}</h6>
+              <h6 className="text-sm font-semibold">{currentMusic.name}</h6>
               <span className="text-xs text-gray-400">
                 {currentMusic.artist}
               </span>

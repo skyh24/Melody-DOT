@@ -6,7 +6,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Header = () => {
   return (
-    <header className="py-8 xl:py-10 text-white container mx-auto flex justify-between otems-center">
+    <header className="h-20 xl:h-16 text-white container mx-auto flex justify-between otems-center">
       {/* logo */}
       <Link href="/">
         <h1 className="text-4xl font-semibold">

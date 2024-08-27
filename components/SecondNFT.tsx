@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useRef, ChangeEvent, useEffect } from "react";
@@ -34,7 +33,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function SecondNFT({ music }) {
+export default function SecondNFT({ music, setisColl }) {
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [musicFile, setMusicFile] = useState<File | null>(null);
 
@@ -46,46 +45,49 @@ export default function SecondNFT({ music }) {
   const inputMusicFile = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [cid, setCid] = useState<string>("");
+
+  const [isOk, setisOk] = useState(false);
+
   useEffect(() => {
     if (music) {
       setMusicPreview(music.src);
     }
   }, []);
 
-  const handleCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const eFile = e.target.files[0];
-      if (eFile) {
-        setCoverFile(eFile);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (typeof reader.result === "string") {
-            setCoverPreview(reader.result);
-          } else {
-            setCoverPreview(null);
-          }
-          // console.log('63',reader.result)
-        };
-        reader.readAsDataURL(eFile);
-      }
-    }
-  };
+  // const handleCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files.length > 0) {
+  //     const eFile = e.target.files[0];
+  //     if (eFile) {
+  //       setCoverFile(eFile);
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => {
+  //         if (typeof reader.result === "string") {
+  //           setCoverPreview(reader.result);
+  //         } else {
+  //           setCoverPreview(null);
+  //         }
+  //         // console.log('63',reader.result)
+  //       };
+  //       reader.readAsDataURL(eFile);
+  //     }
+  //   }
+  // };
 
-  const handleMusicChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setMusicFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setMusicPreview(reader.result);
-        } else {
-          setMusicPreview(null);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleMusicChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files.length > 0) {
+  //     const file = e.target.files[0];
+  //     setMusicFile(file);
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       if (typeof reader.result === "string") {
+  //         setMusicPreview(reader.result);
+  //       } else {
+  //         setMusicPreview(null);
+  //       }
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -111,7 +113,7 @@ export default function SecondNFT({ music }) {
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-4 grid grid-cols-2 gap-4"
             >
-              <div>
+              {/* <div>
                 <FormField
                   control={form.control}
                   name="musicname"
@@ -170,7 +172,7 @@ export default function SecondNFT({ music }) {
                     </FormItem>
                   )}
                 />
-              </div>
+              </div> */}
               <div>
                 <FormField
                   control={form.control}
@@ -215,8 +217,24 @@ export default function SecondNFT({ music }) {
                   </div>
                 )}
                 <div className="text-center my-10">
-                  <Button type="submit" variant="nooutline">AI Create</Button>
-                  <Button variant="outline" className="ml-2 font-semibold">Upload</Button>
+                  <Button type="submit" variant="nooutline">
+                    AI Create
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="ml-2 font-semibold"
+                    onClick={() => {
+                      setisOk(true);
+                      setisColl(true);
+                    }}
+                  >
+                    Upload
+                  </Button>
+                  {isOk && (
+                    <div className="text-accent mt-8">
+                      second create successfuly
+                    </div>
+                  )}
                 </div>
               </div>
 
