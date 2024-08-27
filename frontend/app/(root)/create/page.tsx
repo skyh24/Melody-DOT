@@ -8,7 +8,7 @@
  */
 import CreateNFT from "@/components/CreateNFT";
 
-const Services = () => {
+const CreatePage = () => {
 	return (
 		<div>
 			<CreateNFT />
@@ -16,4 +16,4 @@ const Services = () => {
 	);
 };
 
-export default Services;
+export default CreatePage;
