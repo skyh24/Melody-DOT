@@ -36,7 +36,6 @@ export const PlayGround = () => {
 
   const getList = async () => {
     if (!publicClient) throw new Error("Public client is not available");
-
     const wagmiContract = {
       address: contractAddress,
       abi: melodyAbi,
@@ -56,20 +55,22 @@ export const PlayGround = () => {
         args: [i],
       });
     }
-    const tokenURIList = await publicClient.multicall({ contracts: arr });
 
-    let list = [];
-    tokenURIList.map((itm) => {
-      getPinataData(itm.result, (data) => {
-        list.push({
-          name: data.name,
-          src: extractCID(data.mediaUri),
-          image: "",
-        });
-      });
-    });
-    console.log("******");
+    const tokenURIList = await publicClient.multicall({ contracts: arr });
     
+    const dataPromises = tokenURIList.map(async (itm) => {
+      const data = await new Promise((resolve) => getPinataData(itm.result, resolve));
+      return {
+        name: data.name,
+        src: extractCID(data.mediaUri),
+        image: "",
+      };
+    });
+  
+    // Wait for all promises to resolve
+    const list = await Promise.all(dataPromises);
+
+    console.log("***listlistlistlistlist***");
     setmusicList(list);
   };
   useEffect(() => {
@@ -83,10 +84,12 @@ export const PlayGround = () => {
       console.error("Error fetching data:", error);
     }
   }, []);
+
   return (
     <div className="relative">
       {musicList.map((music, idx) => {
         const isPlaying = currentMusic.src === music.src;
+        console.log("first", musicList);
         return (
           <div
             key={idx}
