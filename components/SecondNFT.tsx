@@ -33,7 +33,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function SecondNFT({ music, setisColl }) {
+export default function SecondNFT({ music, setisColl,id }) {
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [musicFile, setMusicFile] = useState<File | null>(null);
 
@@ -225,7 +225,8 @@ export default function SecondNFT({ music, setisColl }) {
                     className="ml-2 font-semibold"
                     onClick={() => {
                       setisOk(true);
-                      setisColl(true);
+                      console.log('-1')
+                      setisColl(id);
                     }}
                   >
                     Upload
