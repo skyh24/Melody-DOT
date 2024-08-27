@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-pragma solidity ^0.8.21;
+pragma solidity ^0.8.24;
 
 import {RMRKMultiAssetPreMint} from
     "@rmrk-team/evm-contracts/contracts/implementations/premint/RMRKMultiAssetPreMint.sol";
@@ -20,4 +20,23 @@ contract Melody is RMRKMultiAssetPreMint {
     ) RMRKMultiAssetPreMint("Melody", "MLD", collectionMetadata, maxSupply, royaltyRecipient, royaltyPercentageBps) {}
 
     // Methods
+    function mint(
+        address to,
+        uint256 numToMint,
+        string memory tokenURI
+    ) public override returns (uint256 firstTokenId) {
+        (uint256 nextToken, uint256 totalSupplyOffset) = _prepareMint(
+            numToMint
+        );
+
+        for (uint256 i = nextToken; i < totalSupplyOffset; ) {
+            _setTokenURI(i, tokenURI);
+            _safeMint(to, i, "");
+            unchecked {
+                ++i;
+            }
+        }
+
+        firstTokenId = nextToken;
+    }
 }
