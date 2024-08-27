@@ -17,30 +17,51 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AiOutlineLoading } from "react-icons/ai";
-import { useAccount } from "wagmi";
+import {
+	useAccount,
+	useWriteContract,
+	useWaitForTransactionReceipt,
+	usePublicClient,
+} from "wagmi";
+import { melodyAbi } from "@/components/contracts/abi";
 
-// Simplified schema without file validation
 const formSchema = z.object({
-	// musicFile: "",
+	musicFile: z.any().refine((file) => file instanceof File, {
+		message: "Music file is required",
+	}),
 });
 
-export default function CreateNFT() {
-	const [musicFile, setMusicFile] = useState<File | null>(null);
-	const [musicPreview, setMusicPreview] = useState<string | null>(null);
+const contractAddress = process.env
+	.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
-	const inputFile = useRef<HTMLInputElement | null>(null);
-	const inputMusicFile = useRef<HTMLInputElement | null>(null);
+if (!contractAddress) {
+	console.error(
+		"NEXT_PUBLIC_CONTRACT_ADDRESS is not set in environment variables",
+	);
+}
+
+export default function CreateNFT() {
+	const [musicPreview, setMusicPreview] = useState<string | null>(null);
 	const [uploading, setUploading] = useState<boolean>(false);
-	const [cid, setCid] = useState<string>("");
+	const [tokenUri, setTokenUri] = useState<string>("");
+	const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
 	const { address } = useAccount();
+	const publicClient = usePublicClient();
 
-	const uploadFile = async () => {
-		if (!musicFile || !address) return;
+	const { writeContract, data: hash, isPending, error } = useWriteContract();
+
+	const { isLoading: isConfirming, isSuccess: isConfirmed } =
+		useWaitForTransactionReceipt({
+			hash,
+		});
+
+	const uploadFile = async (file: File) => {
+		if (!file || !address) return;
 		try {
 			setUploading(true);
 			const data = new FormData();
-			data.append("file", musicFile);
+			data.append("file", file);
 
 			// FIRST UPLOAD
 			const uploadRequest = await fetch("/api/upload", {
@@ -49,14 +70,12 @@ export default function CreateNFT() {
 			});
 			const res = await uploadRequest.json();
 			if (res?.IpfsHash) {
-				setCid(res.IpfsHash);
-
 				// SECOND Json
 				const secDataParams = {
-					image: `ipfs://${res.IpfsHash}/${musicFile.name}`,
-					mediaUri: `ipfs://${res.IpfsHash}/${musicFile.name}`,
+					image: "",
+					mediaUri: `ipfs://${res.IpfsHash}/${file.name}`,
 					attributes: [],
-					name: musicFile.name,
+					name: file.name,
 					description: ".",
 				};
 
@@ -75,54 +94,51 @@ export default function CreateNFT() {
 				console.log("Second upload response:", secondRes);
 
 				if (secondRes?.IpfsHash) {
-					const tokenUri = `ipfs://${secondRes.IpfsHash}`;
+					const newTokenUri = `ipfs://${secondRes.IpfsHash}`;
+					setTokenUri(newTokenUri);
 
-					// Call the API to mint the NFT
-					const mintResponse = await fetch("/api/assets", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({
-							address,
-							tokenUri,
-						}),
-					});
+					// Simulate the transaction first
+					try {
+						if (!publicClient)
+							throw new Error("Public client is not available");
+						const { request } = await publicClient.simulateContract({
+							account: address,
+							address: contractAddress,
+							abi: melodyAbi,
+							functionName: "mint",
+							args: [address, BigInt(1), newTokenUri],
+						});
 
-					const mintResult = await mintResponse.json();
-					if (mintResult.success) {
-						console.log("NFT minted successfully:", mintResult.data);
-						// Handle successful minting (e.g., show success message, update UI)
-					} else {
-						console.error("Failed to mint NFT:", mintResult.error);
-						alert("Failed to mint NFT. Please try again.");
+						// If simulation is successful, proceed with the actual transaction
+						writeContract(request);
+					} catch (simulationError) {
+						console.error("Transaction simulation failed:", simulationError);
+						alert(
+							"Transaction simulation failed. Please check your wallet and try again.",
+						);
 					}
 				}
-
-				setUploading(false);
 			} else {
 				console.error("No IpfsHash in response.");
-				setUploading(false);
 				alert("Error uploading file");
 			}
 		} catch (e) {
 			console.error(e);
+			alert("Trouble uploading file");
+		} finally {
 			setUploading(false);
-			alert("Trouble uploading file or minting NFT");
 		}
 	};
 
 	const handleMusicChange = (e: ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files.length > 0) {
-			const file = e.target.files[0];
-			setMusicFile(file);
+		const file = e.target.files?.[0];
+		if (file) {
+			form.setValue("musicFile", file);
 			const reader = new FileReader();
 			reader.onloadend = () => {
-				if (typeof reader.result === "string") {
-					setMusicPreview(reader.result);
-				} else {
-					setMusicPreview(null);
-				}
+				setMusicPreview(
+					typeof reader.result === "string" ? reader.result : null,
+				);
 			};
 			reader.readAsDataURL(file);
 		}
@@ -134,17 +150,16 @@ export default function CreateNFT() {
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		if (musicFile) {
-			uploadFile();
-			console.log(values);
+		if (values.musicFile instanceof File) {
+			uploadFile(values.musicFile);
 		} else {
-			alert("Please select a music file.");
+			alert("Please select a valid music file.");
 		}
 	}
 
 	return (
-		<main className="w-full m-auto ">
-			<div className="w-full m-auto sm:max-w-lg w-full p-10 bg-white rounded-xl z-10 mt-24">
+		<main className="w-full m-auto">
+			<div className="w-full m-auto sm:max-w-lg p-10 bg-white rounded-xl z-10 mt-24">
 				<h1 className="text-4xl font-bold text-gray-700 mb-10 text-center">
 					Create NFT
 				</h1>
@@ -162,9 +177,10 @@ export default function CreateNFT() {
 										<FormControl>
 											<div className="grid w-full max-w-sm items-center gap-1.5">
 												<Input
-													ref={inputMusicFile}
-													onChange={handleMusicChange}
-													id="musicFile"
+													onChange={(e) => {
+														handleMusicChange(e);
+														field.onChange(e.target.files?.[0]);
+													}}
 													type="file"
 													accept=".mp3, .wav"
 													className="text-sm font-bold text-gray-500 tracking-wide"
@@ -172,7 +188,7 @@ export default function CreateNFT() {
 												{musicPreview && (
 													<div className="mt-2">
 														<audio controls>
-															<source src={musicPreview} type="audio/mp3" />
+															<source src={musicPreview} type="audio/mpeg" />
 															Your browser does not support the audio element.
 														</audio>
 													</div>
@@ -181,7 +197,7 @@ export default function CreateNFT() {
 										</FormControl>
 										<FormDescription>
 											<span className="pl-2 text-sm text-gray-300 text-center">
-												File type: MP3 types of file
+												File type: MP3 or WAV
 											</span>
 										</FormDescription>
 										<FormMessage />
@@ -189,16 +205,33 @@ export default function CreateNFT() {
 								)}
 							/>
 							<div className="text-center">
-								<Button type="submit" disabled={uploading}>
-									{uploading && (
+								<Button
+									type="submit"
+									disabled={uploading || isPending || isConfirming}
+								>
+									{(uploading || isPending || isConfirming) && (
 										<AiOutlineLoading className="mr-2 h-4 w-4 animate-spin" />
 									)}
-									Create
+									{isPending
+										? "Minting..."
+										: isConfirming
+											? "Confirming..."
+											: "Create"}
 								</Button>
 							</div>
 						</form>
 					</Form>
 				</div>
+				{isConfirmed && (
+					<div className="mt-4 text-center text-green-600">
+						NFT minted successfully!
+					</div>
+				)}
+				{error && (
+					<div className="mt-4 text-center text-red-600">
+						Error: {error.message}
+					</div>
+				)}
 			</div>
 		</main>
 	);
