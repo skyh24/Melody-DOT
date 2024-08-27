@@ -9,11 +9,11 @@
 import CreateNFT from "@/components/CreateNFT";
 
 const Services = () => {
-  return (
-    <div>
-      <CreateNFT />
-    </div>
-  );
+	return (
+		<div>
+			<CreateNFT />
+		</div>
+	);
 };
 
 export default Services;
