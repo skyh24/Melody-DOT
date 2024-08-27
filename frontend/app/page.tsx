@@ -52,15 +52,15 @@ export default function Home() {
   return (
     <main className="w-full overflow-auto relative">
       {/* TITLE */}
-      <BackgroundBeamsWithCollision>
+      {/* <BackgroundBeamsWithCollision> */}
         <h1
           className="my-20 text-center text-4xl md:text-4xl lg:text-6xl font-semibold"
           style={{ lineHeight: "5rem" }}
         >
           Build stunning NFT and music experiences <br /> at &nbsp;
-          <Cover>lightning speed</Cover>
+          {/* <Cover>lightning speed</Cover> */}
         </h1>
-      </BackgroundBeamsWithCollision>
+      {/* </BackgroundBeamsWithCollision> */}
 
       <div className=" flex items-center w-full gap-4 px-20 md:mx-auto mt-6 mb-20">
         <div className=" w-4/5 border-r pr-8">
