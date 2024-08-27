@@ -6,17 +6,90 @@ import { Button } from "../ui/button";
 import { MdPlayCircle } from "react-icons/md";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import SecondNFT from "@/components/SecondNFT";
+import { useEffect, useState } from "react";
+
+import {
+  useAccount,
+  useWriteContract,
+  useWaitForTransactionReceipt,
+  usePublicClient,
+} from "wagmi";
+import { melodyAbi } from "@/contracts/abi";
+import { getPinataData } from "@/utils/config";
+
 export const PlayGround = () => {
   const { playList, setCurrentMusic, currentMusic } = usePlayer();
+  const [musicList, setmusicList] = useState([]);
+  const publicClient = usePublicClient();
 
+  const contractAddress = process.env
+    .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
+
+  const extractCID = (ipfsUrl) => {
+    // 去掉前缀 "ipfs://"
+    const urlWithoutPrefix = ipfsUrl.replace("ipfs://", "");
+    // 分割字符串，CID 在第一个 '/' 之前
+    const cid = urlWithoutPrefix.split("/")[0];
+    const url = `https://${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${cid}`;
+    return url;
+  };
+
+  const getList = async () => {
+    if (!publicClient) throw new Error("Public client is not available");
+
+    const wagmiContract = {
+      address: contractAddress,
+      abi: melodyAbi,
+    };
+    const data = await publicClient.readContract({
+      ...wagmiContract,
+      functionName: "totalSupply",
+    });
+
+    const totalSupply =
+      typeof data === "bigint" ? Number(data) : Number(data[0]);
+    let arr = [];
+    for (let i = 1; i < totalSupply; i++) {
+      arr.push({
+        ...wagmiContract,
+        functionName: "tokenURI",
+        args: [i],
+      });
+    }
+    const tokenURIList = await publicClient.multicall({ contracts: arr });
+
+    let list = [];
+    tokenURIList.map((itm) => {
+      getPinataData(itm.result, (data) => {
+        list.push({
+          name: data.name,
+          src: extractCID(data.mediaUri),
+          image: "",
+        });
+      });
+    });
+    console.log("******");
+    
+    setmusicList(list);
+  };
+  useEffect(() => {
+    console.log("musicList", musicList);
+  }, [musicList, setmusicList]);
+
+  useEffect(() => {
+    try {
+      getList();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, []);
   return (
     <div className="relative">
-      {playList.map((music, idx) => {
+      {musicList.map((music, idx) => {
         const isPlaying = currentMusic.src === music.src;
-        // console.log(isPlaying);
         return (
           <div
-            key={music.id}
+            key={idx}
             // className={`
             //   ${isPlaying ? " border-accent-500" : "border-transparent"}
             //    flex gap-2 text-xs relative cursor-pointer transition-shadow duration-300 shadow-lg hover:shadow-none bg-gradient-radial rounded-2xl overflow-hidden text-white border-2 border-dashed`}
@@ -31,10 +104,10 @@ export const PlayGround = () => {
                 setCurrentMusic(music, true);
               }}
             >
-              {music.thumbnail ? (
+              {music.image ? (
                 <img
-                  src={music.thumbnail}
-                  alt={music.title}
+                  src={music.image}
+                  // alt={music.title}
                   className="rounded-lg h-full w-full object-cover"
                 />
               ) : (
@@ -48,8 +121,8 @@ export const PlayGround = () => {
             </div>
             {/* RIGHT */}
             <div className="w-5/6 flex flex-col gap-2 justify-center bg-gradient-to-l from-zinc-700   p-6">
-              <h6 className="font-semibold text-sm">{music.title}</h6>
-              <p className="text-xs text-gray-400">{music.artist}</p>
+              <h6 className="font-semibold text-sm">{music.name}</h6>
+              {/* <p className="text-xs text-gray-400">{music.artist}</p> */}
 
               <Sheet>
                 <SheetTrigger className="flex justify-center text-primary items-center bg-accent hover:bg-accent-hover px-4 py-4 rounded-full flex items-center gap-2 absolute right-4 top-1/2 transform -translate-y-1/2">
