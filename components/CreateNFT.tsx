@@ -23,7 +23,7 @@ import {
 	useWaitForTransactionReceipt,
 	usePublicClient,
 } from "wagmi";
-import { melodyAbi } from "@/components/contracts/abi";
+import { melodyAbi } from "@/contracts/abi";
 
 const formSchema = z.object({
 	musicFile: z.any().refine((file) => file instanceof File, {

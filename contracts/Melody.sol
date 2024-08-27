@@ -20,16 +20,14 @@ contract Melody is RMRKMultiAssetPreMint {
     ) RMRKMultiAssetPreMint("Melody", "MLD", collectionMetadata, maxSupply, royaltyRecipient, royaltyPercentageBps) {}
 
     // Methods
-    function mint(
-        address to,
-        uint256 numToMint,
-        string memory tokenURI
-    ) public override returns (uint256 firstTokenId) {
-        (uint256 nextToken, uint256 totalSupplyOffset) = _prepareMint(
-            numToMint
-        );
+    function mint(address to, uint256 numToMint, string memory tokenURI)
+        public
+        override
+        returns (uint256 firstTokenId)
+    {
+        (uint256 nextToken, uint256 totalSupplyOffset) = _prepareMint(numToMint);
 
-        for (uint256 i = nextToken; i < totalSupplyOffset; ) {
+        for (uint256 i = nextToken; i < totalSupplyOffset;) {
             _setTokenURI(i, tokenURI);
             _safeMint(to, i, "");
             unchecked {
